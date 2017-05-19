@@ -1,0 +1,10 @@
+<h1>
+  {{title}}
+</h1>
+<nav>
+  <a routerLinkActive="true" [routerLink]="['/home']">Home</a>
+  <a routerLinkActive="true" [routerLink]="['/pictures']">Pictures</a>
+</nav>
+<section>
+  <router-outlet></router-outlet>
+</section>
