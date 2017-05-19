@@ -75,3 +75,16 @@ export class LoadingScreenComponent {}
 export class LoadingModule {}
 
 ```
+
+## Important!!
+
+The cli generated code doesn't container moduleId, but you need it.
+```ts
+@Component({
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css'],
+  moduleId: module.id
+})
+```
+So for each component, add a moduleId for it.
