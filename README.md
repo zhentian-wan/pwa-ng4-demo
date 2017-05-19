@@ -1,4 +1,4 @@
-#PWA-NG¤-DEMO
+# PWA-NG-DEMO
 
 ### Install:
 
