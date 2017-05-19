@@ -1,28 +1,77 @@
-# NguCourse
+#PWA-NG¤-DEMO
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.0.4.
+### Install:
 
-## Development server
+```bash
+npm i -g yarn http-server @angular/cli@latest
+```
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+```bash
+yarn add @angular/animations @angular/platform-server @angular/service-worker ng-pwa-tools web-push  
+```
 
-## Code scaffolding
+### Register service worker
+in main.ts file:
+```ts
+platformBrowserDynamic()
+  .bootstrapModule(AppModule)
+  .then(( ) => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/worker-basic.min.js');
+    }
+  });
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|module`.
+```
 
-## Build
+### Create a bash file
+```bash
+#!/bin/bash
+PATH=$PATH:$(npm bin)
+set -x
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
+# Production build
+ng build --prod
 
-## Running unit tests
+# Create an app shell with only loading module
+ngu-app-shell --module src/app/app.module.ts  \
+              --url /loading \
+              --insert-module src/app/loading.module.ts \
+              --out dist/index.html
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+# Create manifest based on static files
+ngu-sw-manifest --module src/app/app.module.ts \
+                --out dist/ngsw-manifest.json
 
-## Running end-to-end tests
+# http2 push
+ngu-firebase-push --module src/app/app.module.ts
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-Before running the tests make sure you are serving the app via `ng serve`.
+cp node_modules/@angular/service-worker/bundles/worker-basic.min.js dist/
 
-## Further help
+# Serve
+cd dist
+http-server
+```
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+#### Loading Module
+
+```ts
+import {Component, NgModule} from '@angular/core';
+import {RouterModule} from '@angular/router';
+
+@Component({
+  selector: 'app-loading-screen',
+  template: `<h3>Loading...</h3>`
+})
+export class LoadingScreenComponent {}
+
+@NgModule({
+  declarations: [LoadingScreenComponent],
+  imports: [
+    RouterModule.forChild([
+      {path: 'loading', component: LoadingScreenComponent},
+    ])
+  ]
+})
+export class LoadingModule {}
+
+```
